@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DIT Librairie | Livres</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="books">
+    <div class="site-shell">
+      <header id="siteHeader"></header>
+      <main id="pageContent" class="page page-books">
+        <section class="section search-shell">
+          <div class="section-heading compact">
+            <p class="eyebrow">Catalogue</p>
+            <h1>Trouvez un livre en quelques filtres.</h1>
+          </div>
+          <form id="bookSearchForm" class="search-panel">
+            <input id="searchQuery" name="q" placeholder="Titre, auteur, ISBN, catégorie..." />
+            <select id="searchCategory" name="categorie">
+              <option value="">Tous</option>
+            </select>
+            <label class="checkline">
+              <input id="searchAvailable" type="checkbox" />
+              <span>Disponibles uniquement</span>
+            </label>
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+          </form>
+        </section>
+
+        <section id="booksResultsSection" class="section">
+          <div class="section-heading compact">
+            <p class="eyebrow">Recherche</p>
+            <h2>Résultats de la recherche</h2>
+          </div>
+          <div id="booksResults" class="book-grid"></div>
+        </section>
+
+        <section class="section">
+          <div class="section-heading compact">
+            <p class="eyebrow" id="booksSecondaryEyebrow">Sélection</p>
+            <h2 id="booksSecondaryTitle">Derniers livres ajoutés</h2>
+          </div>
+          <div id="booksSecondaryList" class="book-grid"></div>
+        </section>
+      </main>
+      <footer class="site-footer">
+        <p>Catalogue DIT</p>
+        <p>Recherche, disponibilité et recommandations.</p>
+      </footer>
+    </div>
+    <aside id="toast" class="toast"></aside>
+    <script src="app.js"></script>
+  </body>
+</html>

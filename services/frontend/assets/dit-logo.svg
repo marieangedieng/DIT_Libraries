@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="title">
+  <title>Logo DIT</title>
+  <rect width="240" height="240" fill="#1B5A68" rx="8" />
+  <path fill="#F5F4EF" d="M16 58h42c39 0 63 24 63 53 0 36-27 54-64 54H16V58zm31 22v63h10c18 0 33-12 33-31 0-18-13-32-33-32H47zm80-22h31v107h-31V58zm35 0h62v22h-31v85h-31V58z" />
+</svg>
