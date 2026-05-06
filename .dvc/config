@@ -1,0 +1,4 @@
+[core]
+    remote = stockage_gdrive
+['remote "stockage_gdrive"']
+    url = gdrive://1TCrV1RVH_C-XG_aIAhAonyIrRrnZkpmZ
