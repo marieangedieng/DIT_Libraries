@@ -1,4 +1,7 @@
 [core]
     remote = stockage_gdrive
 ['remote "stockage_gdrive"']
-    url = gdrive://1TCrV1RVH_C-XG_aIAhAonyIrRrnZkpmZ
+    url = gdrive://1EBNyKEMcvo02ES3U_px54d-xgGjCPnFq
+    gdrive_acknowledge_abuse = true
+    gdrive_use_service_account = true
+    gdrive_service_account_json_file_path = C:\Users\hp\Bureau\Universite\DIT\M2\S3\outils_versioning\dit-librairie-245dd53f7c43.json
