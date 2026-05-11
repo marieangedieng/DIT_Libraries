@@ -1,0 +1,281 @@
+services:
+  mysql-dev:
+    image: mysql:8.4
+    profiles: ["dev"]
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql_dev_data:/var/lib/mysql
+      - ./docker/mysql-init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$${MYSQL_ROOT_PASSWORD} --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    networks: [dit_librairie_reseau]
+
+  livres-dev:
+    profiles: ["dev"]
+    build:
+      context: .
+      dockerfile: services/livres/Dockerfile
+    command: sh -c "python manage.py migrate && python manage.py seed_admin && python manage.py runserver 0.0.0.0:8000"
+    restart: on-failure
+    environment:
+      DB_ENGINE: mysql
+      DB_NAME: ${MYSQL_LIVRES_DB_NAME:-livres_db}
+      DB_USER: ${MYSQL_USER:-dit}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-dit}
+      DB_HOST: mysql-dev
+      DB_PORT: 3306
+      DJANGO_ALLOWED_HOSTS: "*"
+    ports:
+      - "${SERVICE_LIVRES_PORT:-8001}:8000"
+    volumes:
+      - ./services/livres:/app
+    depends_on:
+      mysql-dev:
+        condition: service_healthy
+    networks: [dit_librairie_reseau]
+
+  utilisateurs-dev:
+    profiles: ["dev"]
+    build:
+      context: .
+      dockerfile: services/utilisateurs/Dockerfile
+    command: sh -c "python manage.py migrate && python manage.py seed_admin && python manage.py runserver 0.0.0.0:8000"
+    restart: on-failure
+    environment:
+      DB_ENGINE: mysql
+      DB_NAME: ${MYSQL_UTILISATEURS_DB_NAME:-utilisateurs_db}
+      DB_USER: ${MYSQL_USER:-dit}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-dit}
+      DB_HOST: mysql-dev
+      DB_PORT: 3306
+      DJANGO_ALLOWED_HOSTS: "*"
+    ports:
+      - "${SERVICE_UTILISATEURS_PORT:-8002}:8000"
+    volumes:
+      - ./services/utilisateurs:/app
+    depends_on:
+      mysql-dev:
+        condition: service_healthy
+    networks: [dit_librairie_reseau]
+
+  emprunts-dev:
+    profiles: ["dev"]
+    build:
+      context: .
+      dockerfile: services/emprunts/Dockerfile
+    command: sh -c "python manage.py migrate && python manage.py seed_admin && python manage.py runserver 0.0.0.0:8000"
+    restart: on-failure
+    environment:
+      DB_ENGINE: mysql
+      DB_NAME: ${MYSQL_EMPRUNTS_DB_NAME:-emprunts_db}
+      DB_USER: ${MYSQL_USER:-dit}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-dit}
+      DB_HOST: mysql-dev
+      DB_PORT: 3306
+      DJANGO_ALLOWED_HOSTS: "*"
+      SERVICE_LIVRES_URL: http://livres-dev:8000
+      SERVICE_UTILISATEURS_URL: http://utilisateurs-dev:8000
+    ports:
+      - "${SERVICE_EMPRUNTS_PORT:-8003}:8000"
+    volumes:
+      - ./services/emprunts:/app
+    depends_on:
+      mysql-dev:
+        condition: service_healthy
+      livres-dev:
+        condition: service_started
+      utilisateurs-dev:
+        condition: service_started
+    networks: [dit_librairie_reseau]
+
+  statistiques-dev:
+    profiles: ["dev"]
+    build:
+      context: .
+      dockerfile: services/statistiques/Dockerfile
+    command: sh -c "python manage.py runserver 0.0.0.0:8000"
+    environment:
+      DJANGO_ALLOWED_HOSTS: "*"
+      SERVICE_LIVRES_URL: http://livres-dev:8000
+      SERVICE_UTILISATEURS_URL: http://utilisateurs-dev:8000
+      SERVICE_EMPRUNTS_URL: http://emprunts-dev:8000
+    ports:
+      - "${SERVICE_STATISTIQUES_PORT:-8004}:8000"
+    volumes:
+      - ./services/statistiques:/app
+    depends_on: [livres-dev, utilisateurs-dev, emprunts-dev]
+    networks: [dit_librairie_reseau]
+
+  recommandation-dev:
+    profiles: ["dev"]
+    build:
+      context: .
+      dockerfile: services/recommandation/Dockerfile
+    command: uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      SERVICE_LIVRES_URL: http://livres-dev:8000
+      SERVICE_EMPRUNTS_URL: http://emprunts-dev:8000
+    ports:
+      - "${SERVICE_RECOMMANDATION_PORT:-8005}:8000"
+    volumes:
+      - ./services/recommandation:/app
+      - ./scripts:/workspace/scripts
+      - ./data:/workspace/data
+      - ./models:/workspace/models
+      - ./metrics:/workspace/metrics
+    networks: [dit_librairie_reseau]
+
+  frontend-dev:
+    profiles: ["dev"]
+    build:
+      context: .
+      dockerfile: services/frontend/Dockerfile
+    ports:
+      - "${FRONTEND_PORT:-8080}:8000"
+    volumes:
+      - ./services/frontend:/app
+    depends_on: [livres-dev, utilisateurs-dev, emprunts-dev, statistiques-dev, recommandation-dev]
+    networks: [dit_librairie_reseau]
+
+  mysql:
+    image: mysql:8.4
+    profiles: ["prod"]
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql_prod_data:/var/lib/mysql
+      - ./docker/mysql-init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$${MYSQL_ROOT_PASSWORD} --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    networks: [dit_librairie_reseau]
+
+  livres:
+    profiles: ["prod"]
+    build:
+      context: .
+      dockerfile: services/livres/Dockerfile
+    command: sh -c "python manage.py migrate && python manage.py seed_admin && python manage.py runserver 0.0.0.0:8000"
+    environment:
+      DB_ENGINE: mysql
+      DB_NAME: ${MYSQL_LIVRES_DB_NAME:-livres_db}
+      DB_USER: ${MYSQL_USER:-dit}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-dit}
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DJANGO_ALLOWED_HOSTS: "*"
+    ports:
+      - "${SERVICE_LIVRES_PORT:-8001}:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks: [dit_librairie_reseau]
+
+  utilisateurs:
+    profiles: ["prod"]
+    build:
+      context: .
+      dockerfile: services/utilisateurs/Dockerfile
+    command: sh -c "python manage.py migrate && python manage.py seed_admin && python manage.py runserver 0.0.0.0:8000"
+    environment:
+      DB_ENGINE: mysql
+      DB_NAME: ${MYSQL_UTILISATEURS_DB_NAME:-utilisateurs_db}
+      DB_USER: ${MYSQL_USER:-dit}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-dit}
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DJANGO_ALLOWED_HOSTS: "*"
+    ports:
+      - "${SERVICE_UTILISATEURS_PORT:-8002}:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks: [dit_librairie_reseau]
+
+  emprunts:
+    profiles: ["prod"]
+    build:
+      context: .
+      dockerfile: services/emprunts/Dockerfile
+    command: sh -c "python manage.py migrate && python manage.py seed_admin && python manage.py runserver 0.0.0.0:8000"
+    environment:
+      DB_ENGINE: mysql
+      DB_NAME: ${MYSQL_EMPRUNTS_DB_NAME:-emprunts_db}
+      DB_USER: ${MYSQL_USER:-dit}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-dit}
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DJANGO_ALLOWED_HOSTS: "*"
+      SERVICE_LIVRES_URL: http://livres:8000
+      SERVICE_UTILISATEURS_URL: http://utilisateurs:8000
+    ports:
+      - "${SERVICE_EMPRUNTS_PORT:-8003}:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      livres:
+        condition: service_started
+      utilisateurs:
+        condition: service_started
+    networks: [dit_librairie_reseau]
+
+  statistiques:
+    profiles: ["prod"]
+    build:
+      context: .
+      dockerfile: services/statistiques/Dockerfile
+    environment:
+      DJANGO_ALLOWED_HOSTS: "*"
+      SERVICE_LIVRES_URL: http://livres:8000
+      SERVICE_UTILISATEURS_URL: http://utilisateurs:8000
+      SERVICE_EMPRUNTS_URL: http://emprunts:8000
+    ports:
+      - "${SERVICE_STATISTIQUES_PORT:-8004}:8000"
+    depends_on: [livres, utilisateurs, emprunts]
+    networks: [dit_librairie_reseau]
+
+  recommandation:
+    profiles: ["prod"]
+    build:
+      context: .
+      dockerfile: services/recommandation/Dockerfile
+    environment:
+      SERVICE_LIVRES_URL: http://livres:8000
+      SERVICE_EMPRUNTS_URL: http://emprunts:8000
+    volumes:
+      - ./data:/workspace/data
+      - ./models:/workspace/models
+      - ./metrics:/workspace/metrics
+    ports:
+      - "${SERVICE_RECOMMANDATION_PORT:-8005}:8000"
+    networks: [dit_librairie_reseau]
+
+  frontend:
+    profiles: ["prod"]
+    build:
+      context: .
+      dockerfile: services/frontend/Dockerfile
+    ports:
+      - "${FRONTEND_PORT:-8080}:8000"
+    depends_on: [livres, utilisateurs, emprunts, statistiques, recommandation]
+    networks: [dit_librairie_reseau]
+
+networks:
+  dit_librairie_reseau:
+    driver: bridge
+
+volumes:
+  mysql_dev_data:
+  mysql_prod_data:
