@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DIT Librairie | Connexion</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="login">
+    <div class="site-shell">
+      <header id="siteHeader"></header>
+      <main class="page page-auth">
+        <section class="auth-card">
+          <div class="section-heading compact">
+            <p class="eyebrow">Connexion</p>
+            <h1>Accéder à votre espace</h1>
+          </div>
+          <form id="loginForm" class="form-stack">
+            <label>
+              <span>Email, nom d'utilisateur ou numéro de carte</span>
+              <input name="identifiant" required />
+            </label>
+            <label>
+              <span>Mot de passe</span>
+              <input name="mot_de_passe" type="password" required />
+            </label>
+            <button type="submit" class="btn btn-primary">Se connecter</button>
+          </form>
+          <p class="auth-alt">Pas de compte ? <a href="register.html">Créer un compte</a></p>
+        </section>
+      </main>
+    </div>
+    <aside id="toast" class="toast"></aside>
+    <script src="app.js"></script>
+  </body>
+</html>

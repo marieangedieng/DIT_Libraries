@@ -1,0 +1,5 @@
+outs:
+- md5: 489f7aa5d0af656fc0f72aafc7092ef6
+  size: 1429
+  hash: md5
+  path: books_catalog.csv

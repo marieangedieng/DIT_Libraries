@@ -1,0 +1,9 @@
+CREATE DATABASE IF NOT EXISTS livres_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS utilisateurs_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS emprunts_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE USER IF NOT EXISTS 'dit'@'%' IDENTIFIED BY 'dit';
+GRANT ALL PRIVILEGES ON livres_db.* TO 'dit'@'%';
+GRANT ALL PRIVILEGES ON utilisateurs_db.* TO 'dit'@'%';
+GRANT ALL PRIVILEGES ON emprunts_db.* TO 'dit'@'%';
+FLUSH PRIVILEGES;

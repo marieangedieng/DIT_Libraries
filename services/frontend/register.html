@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DIT Librairie | Créer un compte</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="register">
+    <div class="site-shell">
+      <header id="siteHeader"></header>
+      <main class="page page-auth">
+        <section class="auth-card auth-card-wide">
+          <div class="section-heading compact">
+            <p class="eyebrow">Inscription</p>
+            <h1>Créer un compte lecteur</h1>
+          </div>
+          <form id="registerForm" class="form-grid">
+            <label>
+              <span>Prénom</span>
+              <input name="prenom" required />
+            </label>
+            <label>
+              <span>Nom</span>
+              <input name="nom" required />
+            </label>
+            <label>
+              <span>Email</span>
+              <input name="email" type="email" required />
+            </label>
+            <label>
+              <span>Téléphone</span>
+              <input name="telephone" />
+            </label>
+            <label>
+              <span>Département</span>
+              <input name="departement" />
+            </label>
+            <label>
+              <span>Numéro de carte</span>
+              <input name="numero_carte" required />
+            </label>
+            <label>
+              <span>Profil</span>
+              <select id="registerRole" name="type_utilisateur"></select>
+            </label>
+            <label>
+              <span>Mot de passe</span>
+              <input name="mot_de_passe" type="password" required />
+            </label>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Créer le compte</button>
+            </div>
+          </form>
+          <p class="auth-alt">Déjà inscrit ? <a href="login.html">Se connecter</a></p>
+        </section>
+      </main>
+    </div>
+    <aside id="toast" class="toast"></aside>
+    <script src="app.js"></script>
+  </body>
+</html>

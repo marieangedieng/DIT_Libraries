@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DIT Librairie | Accueil</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="home">
+    <div class="site-shell">
+      <header id="siteHeader"></header>
+      <main id="pageContent" class="page page-home">
+        <section class="hero hero-home">
+          <div class="hero-copy">
+            <p class="eyebrow">Plateforme documentaire DIT</p>
+            <h1>Une bibliothèque universitaire pensée par usage, pas comme une simple liste.</h1>
+            <p class="lede">
+              Consultez les ouvrages, empruntez selon votre profil, suivez vos demandes et accédez à une
+              interface adaptée à votre rôle.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="livres.html">Explorer le catalogue</a>
+              <a class="btn btn-ghost" href="register.html">Créer un compte</a>
+            </div>
+          </div>
+          <aside class="hero-panel">
+            <div class="hero-badge">
+              <span>Étudiants</span>
+              <span>Professeurs</span>
+              <span>Gestionnaires</span>
+              <span>Admins</span>
+            </div>
+            <div class="hero-stat-grid">
+              <article class="metric-card">
+                <span>Catalogue</span>
+                <strong id="homeBookCount">...</strong>
+              </article>
+              <article class="metric-card">
+                <span>Demandes</span>
+                <strong>Suivi par statut</strong>
+              </article>
+              <article class="metric-card">
+                <span>Comptes</span>
+                <strong>Rôles dédiés</strong>
+              </article>
+            </div>
+          </aside>
+        </section>
+
+        <section class="section section-accent">
+          <div class="section-heading">
+            <p class="eyebrow">Fonctionnement</p>
+            <h2>Trois parcours clairs</h2>
+          </div>
+          <div class="feature-grid">
+            <article class="feature-card">
+              <h3>Consulter et emprunter</h3>
+              <p>Les étudiants et professeurs accèdent au catalogue, à leur historique et à leurs statistiques.</p>
+            </article>
+            <article class="feature-card">
+              <h3>Gérer le fonds</h3>
+              <p>Les gestionnaires ajoutent, corrigent et retirent des livres puis traitent les requêtes.</p>
+            </article>
+            <article class="feature-card">
+              <h3>Piloter l’activité</h3>
+              <p>Les administrateurs consultent les indicateurs globaux et ouvrent le back-office Django.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-heading">
+            <p class="eyebrow">Nouveautés</p>
+            <h2>Derniers livres ajoutés</h2>
+          </div>
+          <div id="homeLatestBooks" class="book-grid"></div>
+        </section>
+      </main>
+      <footer class="site-footer">
+        <p>DIT Librairie</p>
+        <p>Catalogue, emprunts, recommandations et administration unifiés.</p>
+      </footer>
+    </div>
+    <aside id="toast" class="toast"></aside>
+    <script src="app.js"></script>
+  </body>
+</html>
