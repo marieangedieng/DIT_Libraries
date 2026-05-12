@@ -9,8 +9,8 @@ stages:
       size: 1857
     - path: scripts/preprocess.py
       hash: md5
-      md5: 0145038371e4fa3c849b02bb0db16f94
-      size: 1470
+      md5: af3a983bb29e17a94907463e4ca9f285
+      size: 1516
     outs:
     - path: data/processed/loans_clean.csv
       hash: md5
@@ -29,12 +29,12 @@ stages:
       size: 1429
     - path: scripts/moteur_recommandation.py
       hash: md5
-      md5: cf1a84899bee547149a4288f4ec55a60
-      size: 18871
+      md5: bbdff1792761bfd6ac3e5d6c4745910c
+      size: 19403
     - path: scripts/train.py
       hash: md5
-      md5: cf182239103ae8aaedd1bfaa19619580
-      size: 859
+      md5: 163e4f7d047d15f35d570b87ba841d54
+      size: 888
     outs:
     - path: models/model.pkl
       hash: md5
@@ -53,12 +53,12 @@ stages:
       size: 1429
     - path: scripts/evaluate.py
       hash: md5
-      md5: a6b031e15bd40e7c1faa79035ac44ee6
-      size: 2283
+      md5: d9a318839a086949506f372de2355551
+      size: 2350
     - path: scripts/moteur_recommandation.py
       hash: md5
-      md5: cf1a84899bee547149a4288f4ec55a60
-      size: 18871
+      md5: bbdff1792761bfd6ac3e5d6c4745910c
+      size: 19403
     outs:
     - path: metrics/metrics.json
       hash: md5
