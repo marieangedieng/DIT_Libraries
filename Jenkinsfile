@@ -19,10 +19,12 @@ pipeline {
             --user "$(id -u):$(id -g)" \
             -e HOME=/tmp \
             -e PIP_CACHE_DIR=/tmp/pip-cache \
-            -v "$PWD:/workspace" \
-            -w /workspace \
+            --volumes-from "$HOSTNAME" \
+            -w "$PWD" \
             "$PYTHON_IMAGE" \
             sh -ec '
+              pwd
+              test -f services/livres/requirements.txt
               python -m pip install --user --upgrade pip
               python -m pip install --user -r services/livres/requirements.txt
               python -m pip install --user -r services/utilisateurs/requirements.txt
