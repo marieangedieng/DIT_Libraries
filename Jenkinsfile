@@ -9,6 +9,12 @@ pipeline {
     stage('Pipeline Python et DVC') {
       steps {
         sh '''
+          echo "Workspace: $PWD"
+          git rev-parse --show-toplevel || true
+          git status --short || true
+          find . -maxdepth 3 -type f -name requirements.txt -print
+          test -f services/livres/requirements.txt
+
           docker run --rm \
             --user "$(id -u):$(id -g)" \
             -e HOME=/tmp \
