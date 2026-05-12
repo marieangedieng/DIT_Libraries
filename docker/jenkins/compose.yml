@@ -1,0 +1,16 @@
+services:
+  jenkins:
+    build:
+      context: ../..
+      dockerfile: docker/jenkins/Dockerfile
+    container_name: dit-librairie-jenkins
+    user: root
+    ports:
+      - "8081:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  jenkins_home:
