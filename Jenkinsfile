@@ -2,32 +2,31 @@ pipeline {
   agent any
 
   environment {
-    PYTHON = 'python3'
+    PYTHON_IMAGE = 'python:3.12-slim'
   }
 
   stages {
-    stage('Préparation') {
+    stage('Pipeline Python et DVC') {
       steps {
         sh '''
-          $PYTHON -m venv .venv
-          . .venv/bin/activate
-          pip install --upgrade pip
-          pip install -r services/livres/requirements.txt
-          pip install -r services/utilisateurs/requirements.txt
-          pip install -r services/emprunts/requirements.txt
-          pip install -r services/statistiques/requirements.txt
-          pip install -r services/recommandation/requirements.txt
-        '''
-      }
-    }
-
-    stage('Pipeline DVC') {
-      steps {
-        sh '''
-          . .venv/bin/activate
-          python scripts/preprocess.py
-          python scripts/train.py
-          python scripts/evaluate.py
+          docker run --rm \
+            --user "$(id -u):$(id -g)" \
+            -e HOME=/tmp \
+            -e PIP_CACHE_DIR=/tmp/pip-cache \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            "$PYTHON_IMAGE" \
+            sh -ec '
+              python -m pip install --user --upgrade pip
+              python -m pip install --user -r services/livres/requirements.txt
+              python -m pip install --user -r services/utilisateurs/requirements.txt
+              python -m pip install --user -r services/emprunts/requirements.txt
+              python -m pip install --user -r services/statistiques/requirements.txt
+              python -m pip install --user -r services/recommandation/requirements.txt
+              python scripts/preprocess.py
+              python scripts/train.py
+              python scripts/evaluate.py
+            '
         '''
       }
     }
