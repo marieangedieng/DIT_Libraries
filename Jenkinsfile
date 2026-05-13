@@ -3,11 +3,13 @@ pipeline {
 
   environment {
     PYTHON_IMAGE = 'python:3.12-slim'
+    DVC_REMOTE = 'stockage_gdrive'
   }
 
   stages {
     stage('Pipeline Python et DVC') {
       steps {
+        withCredentials([file(credentialsId: 'gdrive-dvc-sa', variable: 'GDRIVE_SA_JSON')]) {
         sh '''
           echo "Workspace: $PWD"
           git rev-parse --show-toplevel || true
@@ -21,6 +23,8 @@ pipeline {
             -e PIP_CACHE_DIR=/tmp/pip-cache \
             -e PIP_DEFAULT_TIMEOUT=120 \
             -e PIP_RETRIES=10 \
+            -e GDRIVE_SA_JSON="$GDRIVE_SA_JSON" \
+            -e DVC_REMOTE="$DVC_REMOTE" \
             -v dit_librairie_pip_cache:/tmp/pip-cache \
             --volumes-from "$HOSTNAME" \
             -w "$PWD" \
@@ -36,11 +40,17 @@ pipeline {
               pip_install -r services/emprunts/requirements.txt
               pip_install -r services/statistiques/requirements.txt
               pip_install -r services/recommandation/requirements.txt
+              pip_install "dvc[gdrive]"
+              python -m dvc remote modify --local "$DVC_REMOTE" gdrive_service_account_json_file_path "$GDRIVE_SA_JSON"
+              python -m dvc pull data/raw/loans.csv data/raw/books_catalog.csv
+              test -f data/raw/loans.csv
+              test -f data/raw/books_catalog.csv
               python scripts/preprocess.py
               python scripts/train.py
               python scripts/evaluate.py
             '
         '''
+        }
       }
     }
 
