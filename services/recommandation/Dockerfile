@@ -10,7 +10,7 @@ RUN addgroup --system app && adduser --system --ingroup app app
 WORKDIR /app
 
 COPY services/recommandation/requirements.txt requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --retries 10 --timeout 120 --progress-bar off -r requirements.txt
 
 COPY --chown=app:app services/recommandation /app
 COPY --chown=app:app scripts /workspace/scripts
