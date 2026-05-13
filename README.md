@@ -42,7 +42,7 @@ cd DIT_Libraries
 Si le projet est déjà cloné :
 
 ```powershell
-git pull
+git pull origin main
 ```
 
 Créer le fichier d’environnement local :
@@ -76,17 +76,14 @@ Ne jamais commit ce fichier dans Git.
 
 ### 2. Placer le fichier JSON dans le projet
 
-Depuis la racine du projet, créer le dossier `secrets` si nécessaire :
+Depuis la racine du projet, créer le dossier `secrets` si il n'existe pas déja :
 
 ```powershell
 New-Item -ItemType Directory -Force secrets
 ```
 
-Copier le fichier JSON dans ce dossier :
+Copier le fichier JSON dans ce dossier 
 
-```powershell
-Copy-Item "C:\chemin\vers\dit-librairie-service-account.json" "secrets\dit-librairie-service-account.json"
-```
 
 Vérifier que le fichier est bien présent :
 
