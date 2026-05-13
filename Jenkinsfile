@@ -59,5 +59,14 @@ pipeline {
         sh 'docker compose --profile prod build'
       }
     }
+
+    stage('Deploy local') {
+      steps {
+        sh '''
+          docker compose --profile prod up -d --remove-orphans
+          docker compose --profile prod ps
+        '''
+      }
+    }
   }
 }
